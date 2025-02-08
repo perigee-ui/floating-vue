@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
-import Select from './Select.vue'
 import Option from './Option.vue'
+import Select from './Select.vue'
 
 let isTrue = true
 const fragment = shallowRef<string[]>(['Five', 'Six'])

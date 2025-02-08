@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import type { Placement } from '@perigee-ui/floating-vue/core'
 import { useDelayGroup, useDismiss, useFloating, useFocus, useHover, useInteractions, useRole, useTransitionStyles } from '@perigee-ui/floating-vue'
-import { autoUpdate, flip, offset, type Placement, shift } from '@perigee-ui/floating-vue/core'
+import { autoUpdate, flip, offset, shift } from '@perigee-ui/floating-vue/core'
 import { shallowRef } from 'vue'
 
 type Delay = number | Partial<{ open: number, close: number }>

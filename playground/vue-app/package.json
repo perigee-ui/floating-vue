@@ -8,7 +8,9 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build --force"
+    "type-check": "vue-tsc --build --force",
+    "eslint": "eslint .",
+    "eslint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@vue/shared": "^3.5.13",

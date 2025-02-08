@@ -1,3 +1,4 @@
+import { createLocalFontProcessor } from '@unocss/preset-web-fonts/local'
 import {
   defineConfig,
   presetIcons,
@@ -7,7 +8,6 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
-import { createLocalFontProcessor } from '@unocss/preset-web-fonts/local'
 
 export default defineConfig({
   shortcuts: [
@@ -20,7 +20,7 @@ export default defineConfig({
     },
   ],
   presets: [
-    presetIcons(),
+    presetIcons() as any,
     presetUno(),
     presetTypography(),
     presetWebFonts({

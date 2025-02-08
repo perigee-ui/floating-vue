@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import type { UseFloatingCofnig } from '@perigee-ui/floating-vue/core'
 import { inner, useClick, useDismiss, useFloating, useInteractions } from '@perigee-ui/floating-vue'
-import { autoUpdate, type UseFloatingCofnig } from '@perigee-ui/floating-vue/core'
+import { autoUpdate } from '@perigee-ui/floating-vue/core'
 import { useRef } from '@perigee-ui/floating-vue/vue'
 import { shallowRef, triggerRef } from 'vue'
 
