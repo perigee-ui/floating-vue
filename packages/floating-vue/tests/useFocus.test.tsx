@@ -45,6 +45,7 @@ const App = defineComponent({
       defatult: undefined,
     },
   },
+  inheritAttrs: false,
   setup(props) {
     const open = shallowRef(false)
     const { refs, context } = useFloating({
@@ -292,6 +293,7 @@ describe('visibleOnly prop', () => {
         default: undefined,
       },
     },
+    inheritAttrs: false,
     setup(props) {
       const isOpen = shallowRef(false)
       const { refs, context } = useFloating({

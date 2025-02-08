@@ -6,7 +6,16 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
-      environment: 'jsdom',
+      browser: {
+        enabled: true,
+        instances: [
+          {
+            browser: 'chromium',
+          },
+        ],
+        provider: 'playwright',
+      },
+      // environment: 'jsdom',
       root: fileURLToPath(new URL('./', import.meta.url)),
       // exclude: [
       //   ...configDefaults.exclude,
@@ -25,6 +34,7 @@ export default mergeConfig(
         './tests/useDismiss.test.tsx',
         './tests/useFocus.test.tsx',
         './tests/useRole.test.tsx',
+        './tests/useTypeahead.test.tsx',
 
         // './tests/useDismiss.test.tsx',
         // './tests/**/*.{test,spec}.?(c|m)[jt]s?(x)',

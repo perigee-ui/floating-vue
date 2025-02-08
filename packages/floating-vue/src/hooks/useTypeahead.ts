@@ -15,7 +15,7 @@ export interface UseTypeaheadProps {
    * The index of the active (focused or highlighted) item in the list.
    * @default undefined
    */
-  activeIndex?: Ref<number | undefined>
+  activeIndex?: MaybeRefOrGetter<number | undefined>
   /**
    * Callback invoked with the matching index if found as the user types.
    */
@@ -49,7 +49,7 @@ export interface UseTypeaheadProps {
    * The index of the selected item in the list, if available.
    * @default undefined
    */
-  selectedIndex?: Ref<number | undefined>
+  selectedIndex?: MaybeRefOrGetter<number | undefined>
 }
 
 /**
@@ -63,24 +63,26 @@ export function useTypeahead(
 ): () => ElementProps | undefined {
   const { open, dataRef } = context
   const {
+    listRef,
     enabled = true,
     activeIndex,
     onMatch,
     onTypingChange,
-    findMatch = undefined,
+    findMatch,
     resetMs = 750,
     ignoreKeys = [],
-    selectedIndex = undefined,
+    selectedIndex,
   } = props
 
-  let timeoutIdRef: ReturnType<typeof setTimeout> | undefined
+  let timeoutIdRef: number
   let stringRef = ''
-  let prevIndexRef: number | undefined = selectedIndex?.value ?? activeIndex?.value ?? -1
+  let prevIndexRef: number | undefined = toValue(selectedIndex) ?? toValue(activeIndex) ?? -1
   let matchIndexRef: number | undefined
 
   watchEffect(() => {
     if (toValue(open)) {
-      clearTimeout(timeoutIdRef)
+      if (timeoutIdRef)
+        clearTimeout(timeoutIdRef)
       matchIndexRef = undefined
       stringRef = ''
     }
@@ -89,7 +91,7 @@ export function useTypeahead(
   watchEffect(() => {
     // Sync arrow key navigation but not typeahead navigation.
     if (toValue(open) && stringRef === '')
-      prevIndexRef = selectedIndex?.value ?? activeIndex?.value ?? -1
+      prevIndexRef = toValue(selectedIndex) ?? toValue(activeIndex) ?? -1
   })
 
   function setTypingChange(value: boolean) {
@@ -107,16 +109,25 @@ export function useTypeahead(
     }
   }
 
-  function onKeydown(event: KeyboardEvent) {
-    function getMatchingIndex(list: Array<string | undefined>, orderedList: Array<string | undefined>, string: string) {
-      const str = findMatch
-        ? findMatch(orderedList, string)
-        : orderedList.find(text => text?.toLocaleLowerCase().indexOf(string.toLocaleLowerCase()) === 0)
-
+  function getMatchingIndex(list: Array<string | undefined>, orderedList: Array<string | undefined>, string: string) {
+    if (findMatch) {
+      const str = findMatch(orderedList, string)
       return str ? list.indexOf(str) : -1
     }
+    else {
+      const search = string.toLocaleLowerCase()
+      for (const text of orderedList) {
+        if (text && text.toLocaleLowerCase().indexOf(search) === 0) {
+          return list.indexOf(text)
+        }
+      }
+    }
 
-    const listContent = props.listRef.current
+    return -1
+  }
+
+  function onKeydown(event: KeyboardEvent) {
+    const listContent = listRef.current
 
     if (stringRef.length > 0 && stringRef[0] !== ' ') {
       if (getMatchingIndex(listContent, listContent, stringRef) === -1) {
@@ -128,7 +139,7 @@ export function useTypeahead(
     }
 
     if (
-      listContent == null
+      listContent.length === 0
       || ignoreKeys.includes(event.key)
       // Character key.
       || event.key.length !== 1
@@ -140,7 +151,7 @@ export function useTypeahead(
       return
     }
 
-    if (open && event.key !== ' ') {
+    if (toValue(open) && event.key !== ' ') {
       stopEvent(event)
       setTypingChange(true)
     }
@@ -159,20 +170,21 @@ export function useTypeahead(
     }
 
     stringRef += event.key
-    clearTimeout(timeoutIdRef)
+
+    if (timeoutIdRef)
+      clearTimeout(timeoutIdRef)
     timeoutIdRef = setTimeout(() => {
       stringRef = ''
       prevIndexRef = matchIndexRef
       setTypingChange(false)
+      timeoutIdRef = 0
     }, resetMs)
-
-    const prevIndex = prevIndexRef
 
     const index = getMatchingIndex(
       listContent,
       [
-        ...listContent.slice((prevIndex || 0) + 1),
-        ...listContent.slice(0, (prevIndex || 0) + 1),
+        ...listContent.slice((prevIndexRef || 0) + 1),
+        ...listContent.slice(0, (prevIndexRef || 0) + 1),
       ],
       stringRef,
     )

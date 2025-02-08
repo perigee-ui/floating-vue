@@ -7,6 +7,7 @@ import { useFloating } from '../src/hooks/useFloating.ts'
 describe('positionReference', () => {
   it('sets separate refs', async () => {
     const App = defineComponent({
+      inheritAttrs: false,
       setup() {
         const { refs, elements } = useFloating<HTMLDivElement>()
 
@@ -51,6 +52,7 @@ describe('positionReference', () => {
 
   it('handles unstable reference prop', async () => {
     const App = defineComponent({
+      inheritAttrs: false,
       setup() {
         const { refs, elements } = useFloating<HTMLDivElement>()
 
@@ -96,6 +98,7 @@ describe('positionReference', () => {
 
   it('handles real virtual element', async () => {
     const App = defineComponent({
+      inheritAttrs: false,
       setup() {
         const { refs, elements } = useFloating<HTMLDivElement>()
 

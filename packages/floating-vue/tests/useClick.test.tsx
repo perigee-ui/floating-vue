@@ -1,5 +1,5 @@
 import type { PropType } from 'vue'
-import type { UseClickProps } from '../src/hooks/useClick.ts'
+import type { UseClickProps } from '../src/index.ts'
 import { userEvent } from '@vitest/browser/context'
 import { describe, expect, it } from 'vitest'
 import { render } from 'vitest-browser-vue'
