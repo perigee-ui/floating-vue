@@ -1,8 +1,9 @@
 import type { Dimensions } from '@floating-ui/utils'
+import type { Ref } from 'vue'
 import type { ElementProps, FloatingRootContext } from '../types'
 import type { MutableRefObject } from '../vue/index.ts'
 import { isHTMLElement } from '@floating-ui/utils/dom'
-import { computed, type Ref, shallowRef, toValue, watch, watchEffect } from 'vue'
+import { computed, shallowRef, toValue, watch, watchEffect } from 'vue'
 import {
   activeElement,
   contains,
@@ -380,8 +381,8 @@ export function useListNavigation(
           else {
             indexRef
               = keyRef == null
-              || isMainOrientationToEndKey(keyRef, orientation, rtl)
-              || nested
+                || isMainOrientationToEndKey(keyRef, orientation, rtl)
+                || nested
                 ? getMinIndex(listRef.current, props.disabledIndices)
                 : getMaxIndex(listRef.current, props.disabledIndices)
             keyRef = undefined
@@ -540,10 +541,10 @@ export function useListNavigation(
     if (cols > 1) {
       const sizes
         = itemSizes
-        || Array.from({ length: listRef.current.length }, () => ({
-          width: 1,
-          height: 1,
-        }))
+          || Array.from({ length: listRef.current.length }, () => ({
+            width: 1,
+            height: 1,
+          }))
       // To calculate movements on the grid, we use hypothetical cell indices
       // as if every item was 1x1, then convert back to real indices.
       const cellMap = buildCellMap(sizes, cols, dense)

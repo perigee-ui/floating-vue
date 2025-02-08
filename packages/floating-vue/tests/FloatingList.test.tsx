@@ -1,9 +1,10 @@
+import type { PropType, Ref } from 'vue'
 import { cleanup, fireEvent, render, screen } from '@testing-library/vue'
 import { expect, it } from 'vitest'
-import { defineComponent, type PropType, type Ref, shallowRef } from 'vue'
-import { act } from './utils.ts'
+import { defineComponent, shallowRef } from 'vue'
 import { useClick, useFloating, useFloatingList, useInteractions, useListItem, useListNavigation, useTypeahead } from '../src/index.ts'
 import { createContext, useRef } from '../src/vue/index.ts'
+import { act } from './utils.ts'
 
 const [provideSelectContext, useSelectContext] = createContext<{
   getItemProps: (paylaod?: any) => Record<string, any>

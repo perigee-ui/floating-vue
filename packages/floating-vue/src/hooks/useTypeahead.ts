@@ -1,6 +1,7 @@
+import type { MaybeRefOrGetter, Ref } from 'vue'
 import type { ElementProps, FloatingRootContext } from '../types.ts'
 import type { MutableRefObject } from '../vue/index.ts'
-import { type MaybeRefOrGetter, type Ref, toValue, watchEffect } from 'vue'
+import { toValue, watchEffect } from 'vue'
 import { stopEvent } from '../utils.ts'
 
 export interface UseTypeaheadProps {

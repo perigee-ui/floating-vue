@@ -1,6 +1,7 @@
+import type { CSSProperties, MaybeRefOrGetter, Ref } from 'vue'
 import type { ReferenceType } from '../core/types.ts'
 import type { FloatingContext, Placement, Side } from '../types.ts'
-import { computed, type CSSProperties, type MaybeRefOrGetter, onWatcherCleanup, type Ref, shallowRef, toValue, watchEffect } from 'vue'
+import { computed, onWatcherCleanup, shallowRef, toValue, watchEffect } from 'vue'
 
 export interface UseTransitionStatusProps {
   /**

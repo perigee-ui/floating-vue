@@ -1,3 +1,4 @@
+import type { ReferenceType } from '../core/index.ts'
 import type {
   ExtendedElements,
   ExtendedRefs,
@@ -8,7 +9,7 @@ import type {
 } from '../types.ts'
 import { isElement } from '@floating-ui/utils/dom'
 import { shallowRef, watchEffect, watchSyncEffect } from 'vue'
-import { type ReferenceType, useFloating as usePosition } from '../core/index.ts'
+import { useFloating as usePosition } from '../core/index.ts'
 import { useRef } from '../vue/index.ts'
 import { useFloatingRootContext } from './useFloatingRootContext.ts'
 

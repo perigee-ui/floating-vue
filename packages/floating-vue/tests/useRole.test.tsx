@@ -1,10 +1,11 @@
+import type { PropType } from 'vue'
+
 import type { UseRoleProps } from '../src/hooks/useRole.ts'
-
 import { userEvent } from '@vitest/browser/context'
-import { describe, expect, it } from 'vitest'
 
+import { describe, expect, it } from 'vitest'
 import { render } from 'vitest-browser-vue'
-import { defineComponent, type PropType, shallowRef, useId } from 'vue'
+import { defineComponent, shallowRef, useId } from 'vue'
 import {
   useClick,
   useFloating,

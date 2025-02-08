@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { Alignment, Side } from '../../types.ts'
+import type { CSSProperties } from 'vue'
 
+import type { Alignment, Side } from '../../types.ts'
 import type { FloatingArrowProps } from './FloatingArrow.ts'
-import { computed, type CSSProperties, useId } from 'vue'
+import { computed, useId } from 'vue'
 
 defineOptions({
   name: 'NFloatingArrow',

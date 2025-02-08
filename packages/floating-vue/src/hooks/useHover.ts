@@ -1,7 +1,8 @@
+import type { MaybeRefOrGetter, UnwrapRef } from 'vue'
 import type { ElementProps, FloatingContext, OpenChangeReason } from '../types'
 import { isElement } from '@floating-ui/utils/dom'
 import { NOOP } from '@vue/shared'
-import { type MaybeRefOrGetter, onWatcherCleanup, toValue, type UnwrapRef, watchEffect, watchSyncEffect } from 'vue'
+import { onWatcherCleanup, toValue, watchEffect, watchSyncEffect } from 'vue'
 import { contains, getDocument, isMouseLikePointerType } from '../utils.ts'
 import { createAttribute } from '../utils/createAttribute.ts'
 

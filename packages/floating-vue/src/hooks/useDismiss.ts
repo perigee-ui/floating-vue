@@ -1,3 +1,4 @@
+import type { MaybeRefOrGetter } from 'vue'
 import type { ElementProps, FloatingRootContext } from '../types.ts'
 import {
   getComputedStyle,
@@ -7,7 +8,7 @@ import {
   isLastTraversableNode,
   isWebKit,
 } from '@floating-ui/utils/dom'
-import { type MaybeRefOrGetter, onWatcherCleanup, toValue, watchEffect } from 'vue'
+import { onWatcherCleanup, toValue, watchEffect } from 'vue'
 import { getOverflowAncestors } from '../core/index.ts'
 import {
   contains,

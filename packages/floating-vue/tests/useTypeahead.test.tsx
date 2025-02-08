@@ -1,12 +1,14 @@
+import type { MaybeRef, PropType } from 'vue'
 import type { UseTypeaheadProps } from '../src/hooks/useTypeahead.ts'
 import type { ElAttrs } from '../src/types.ts'
-import userEvent from '@testing-library/user-event'
 
+import type { MutableRefObject } from '../src/vue/index.ts'
+import userEvent from '@testing-library/user-event'
 import { cleanup, fireEvent, render, screen } from '@testing-library/vue'
 import { expect, it, vi } from 'vitest'
-import { computed, defineComponent, type MaybeRef, type PropType, shallowRef, unref } from 'vue'
+import { computed, defineComponent, shallowRef, unref } from 'vue'
 import { useClick, useFloating, useInteractions, useTypeahead } from '../src/index.ts'
-import { type MutableRefObject, useRef } from '../src/vue/index.ts'
+import { useRef } from '../src/vue/index.ts'
 import { act } from './utils.ts'
 // import { Main } from '../visual/components/Menu'
 

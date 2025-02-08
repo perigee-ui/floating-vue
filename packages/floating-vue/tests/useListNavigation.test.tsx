@@ -1,14 +1,17 @@
-import userEvent from '@testing-library/user-event'
-import { cleanup, fireEvent, render, screen } from '@testing-library/vue'
+import type { PropType } from 'vue'
+import type { UseListNavigationProps } from '../src/index.ts'
 // import userEvent from '@testing-library/user-event'
 // import { expect, it, vi } from 'vitest'
 
+import type { MutableRefObject } from '../src/vue/index.ts'
+import userEvent from '@testing-library/user-event'
+import { cleanup, fireEvent, render, screen } from '@testing-library/vue'
 import { describe, expect, it, vi } from 'vitest'
-import { computed, defineComponent, type PropType, shallowRef, watchSyncEffect } from 'vue'
-import { act } from './utils.ts'
+import { computed, defineComponent, shallowRef, watchSyncEffect } from 'vue'
 import { useInteractions } from '../src/hooks/useInteractions.ts'
-import { useClick, useDismiss, useFloating, useListNavigation, type UseListNavigationProps } from '../src/index.ts'
-import { type MutableRefObject, useRef } from '../src/vue/index.ts'
+import { useClick, useDismiss, useFloating, useListNavigation } from '../src/index.ts'
+import { useRef } from '../src/vue/index.ts'
+import { act } from './utils.ts'
 // import { useFloating } from '../hooks/useFloating.ts'
 
 const App = defineComponent({

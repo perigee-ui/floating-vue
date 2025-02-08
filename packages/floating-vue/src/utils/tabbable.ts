@@ -1,5 +1,6 @@
+import type { FocusableElement } from 'tabbable'
 // import {activeElement, contains, getDocument} from '@floating-ui/react/utils';
-import { type FocusableElement, tabbable } from 'tabbable'
+import { tabbable } from 'tabbable'
 import { activeElement, contains, getDocument } from '../utils.ts'
 import { createAttribute } from './createAttribute.ts'
 

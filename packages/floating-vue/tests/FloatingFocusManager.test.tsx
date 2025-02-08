@@ -1,10 +1,12 @@
+import type { PropType } from 'vue'
+import type { FloatingFocusManagerProps } from '../src/index.ts'
 import userEvent from '@testing-library/user-event'
 import { cleanup, fireEvent, render, screen } from '@testing-library/vue'
 import { describe, expect, it } from 'vitest'
-import { defineComponent, type PropType, shallowRef, watchEffect } from 'vue'
-import { act } from './utils.ts'
-import { FloatingFocusManager, type FloatingFocusManagerProps, useClick, useDismiss, useFloating, useInteractions, useRole } from '../src/index.ts'
+import { defineComponent, shallowRef, watchEffect } from 'vue'
+import { FloatingFocusManager, useClick, useDismiss, useFloating, useInteractions, useRole } from '../src/index.ts'
 import { useRef } from '../src/vue/index.ts'
+import { act } from './utils.ts'
 
 const App = defineComponent({
   props: {

@@ -1,9 +1,11 @@
+import type { RenderResult } from 'vitest-browser-vue'
+import type { PropType } from 'vue'
 import type { Coords } from '../src/core/index.ts'
+
 import { userEvent } from '@vitest/browser/context'
 import { expect, it } from 'vitest'
-
-import { render, type RenderResult } from 'vitest-browser-vue'
-import { defineComponent, type PropType, shallowRef, watchEffect } from 'vue'
+import { render } from 'vitest-browser-vue'
+import { defineComponent, shallowRef, watchEffect } from 'vue'
 import { useClientPoint, useFloating, useInteractions } from '../src/index.ts'
 import { act } from './utils.ts'
 

@@ -1,10 +1,11 @@
+import type { MaybeRefOrGetter } from 'vue'
 import type {
   ElementProps,
   FloatingRootContext,
   OpenChangeReason,
 } from '../types'
 import { getWindow, isElement, isHTMLElement } from '@floating-ui/utils/dom'
-import { type MaybeRefOrGetter, onScopeDispose, onWatcherCleanup, toValue, watchEffect } from 'vue'
+import { onScopeDispose, onWatcherCleanup, toValue, watchEffect } from 'vue'
 
 import {
   activeElement,

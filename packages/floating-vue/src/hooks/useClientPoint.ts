@@ -1,6 +1,7 @@
+import type { MaybeRefOrGetter } from 'vue'
 import type { ContextData, ElementProps, FloatingRootContext } from '../types.ts'
 import { getWindow } from '@floating-ui/utils/dom'
-import { type MaybeRefOrGetter, onWatcherCleanup, toValue, watchEffect } from 'vue'
+import { onWatcherCleanup, toValue, watchEffect } from 'vue'
 import { contains, getTarget, isMouseLikePointerType } from '../utils.ts'
 
 export interface UseClientPointProps {

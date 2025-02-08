@@ -1,6 +1,7 @@
+import type { MaybeRefOrGetter } from 'vue'
 import type { ElementProps, FloatingRootContext } from '../types'
 import { isHTMLElement } from '@floating-ui/utils/dom'
-import { type MaybeRefOrGetter, toValue } from 'vue'
+import { toValue } from 'vue'
 import { isMouseLikePointerType, isTypeableElement } from '../utils.ts'
 
 export interface UseClickProps {

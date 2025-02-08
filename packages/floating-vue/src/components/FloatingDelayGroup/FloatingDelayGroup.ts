@@ -1,5 +1,6 @@
+import type { Ref } from 'vue'
 import type { FloatingRootContext } from '../../types'
-import { type Ref, shallowRef, toValue, watch, watchEffect } from 'vue'
+import { shallowRef, toValue, watch, watchEffect } from 'vue'
 import { getDelay } from '../../hooks/useHover.ts'
 import { createContext } from '../../vue/index.ts'
 
