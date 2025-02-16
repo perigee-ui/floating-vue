@@ -149,16 +149,22 @@ export function useDismiss(
     // const nodeId = dataRef.floatingContext?.nodeId
 
     // const children = tree ? getChildren(tree.nodesRef.current, nodeId) : []
+    const children: any[] = []
 
     if (!escapeKeyBubbles) {
       event.stopPropagation()
-      const children: any[] = []
 
       if (children.length > 0) {
-        for (const child of children) {
+        let shouldDismiss = true
+
+        children.forEach((child) => {
           if (child.context?.open && !child.context.dataRef.current.__escapeKeyBubbles) {
-            return
+            shouldDismiss = false
           }
+        })
+
+        if (!shouldDismiss) {
+          return
         }
       }
     }
@@ -282,10 +288,16 @@ export function useDismiss(
 
     const children: any[] = []
     if (children.length > 0) {
-      for (const child of children) {
+      let shouldDismiss = true
+
+      children.forEach((child) => {
         if (child.context?.open && !child.context.dataRef.current.__outsidePressBubbles) {
-          return
+          shouldDismiss = false
         }
+      })
+
+      if (!shouldDismiss) {
+        return
       }
     }
 

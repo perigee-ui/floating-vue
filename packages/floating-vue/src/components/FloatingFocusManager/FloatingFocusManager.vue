@@ -11,7 +11,7 @@ import { activeElement, contains, getDocument, getTarget, isTypeableCombobox, is
 import { createAttribute } from '../../utils/createAttribute.ts'
 import { enqueueFocus } from '../../utils/enqueueFocus.ts'
 import { markOthers, supportsInert } from '../../utils/markOthers.ts'
-import { getClosestTabbableElement, getTabbableOptions } from '../../utils/tabbable.ts'
+import { getTabbableOptions } from '../../utils/tabbable.ts'
 import { addPreviouslyFocusedElement, getPreviouslyFocusedElement, HIDDEN_STYLES, ORDER_DEFAULT } from './FloatingFocusManager.ts'
 import FocusGuard from './FocusGuard.vue'
 
@@ -333,8 +333,8 @@ watch(
     const previouslyFocusedElement = activeElement(doc)
     const contextData = context.dataRef
     let openEvent = contextData.openEvent
-    const domReference = context.refs.domReference.current
-    const floating = context.elements.floating.value
+    // const domReference = context.refs.domReference.current
+    // const floating = context.elements.floating.value
 
     addPreviouslyFocusedElement(previouslyFocusedElement)
 
@@ -378,21 +378,21 @@ watch(
       if (shouldFocusReference && context.refs.domReference.current)
         addPreviouslyFocusedElement(context.refs.domReference.current)
 
-      const returnContextElement = domReference || previouslyFocusedElement
-      const tabbableElements = tabbable(getDocument(returnContextElement).body, getTabbableOptions())
+      // const returnContextElement = domReference || previouslyFocusedElement
+      // const tabbableElements = tabbable(getDocument(returnContextElement).body, getTabbableOptions())
 
       // console.error('FF::0::', returnContextElement, domReference, previouslyFocusedElement)
 
       // Wait for the return element to get potentially disconnected before
       // checking.
       queueMicrotask(() => {
-        let returnElement = getPreviouslyFocusedElement()
+        const returnElement = getPreviouslyFocusedElement()
         // console.error('FF::1::', returnElement)
 
-        if (!returnElement && isHTMLElement(returnContextElement) && floating) {
-          returnElement = getClosestTabbableElement(tabbableElements, returnContextElement, floating)
-          // console.error('FF::2::', returnElement?.className)
-        }
+        // if (!returnElement && isHTMLElement(returnContextElement) && floating) {
+        //   returnElement = getClosestTabbableElement(tabbableElements, returnContextElement, floating)
+        //   // console.error('FF::2::', returnElement?.className)
+        // }
 
         // console.error('END::', props.returnFocus)
 

@@ -73,7 +73,7 @@ function applyAttributeToOthers(uncorrectedAvoidElements: Element[], body: HTMLE
     if (!parent || elementsToStop.has(parent))
       return
 
-    for (const node of parent.children) {
+    [].forEach.call(parent.children, (node: Element) => {
       if (getNodeName(node) === 'script')
         return
 
@@ -83,7 +83,8 @@ function applyAttributeToOthers(uncorrectedAvoidElements: Element[], body: HTMLE
       else {
         const attr = controlAttribute ? node.getAttribute(controlAttribute) : null
         const alreadyHidden = attr !== null && attr !== 'false'
-        const counterValue = (counterMap.get(node) || 0) + 1
+        const currentCounterValue = counterMap.get(node) || 0
+        const counterValue = controlAttribute ? currentCounterValue + 1 : currentCounterValue
         const markerValue = (markerCounter.get(node) || 0) + 1
 
         counterMap.set(node, counterValue)
@@ -102,14 +103,15 @@ function applyAttributeToOthers(uncorrectedAvoidElements: Element[], body: HTMLE
           node.setAttribute(controlAttribute, 'true')
         }
       }
-    }
+    })
   }
 
   lockCount++
 
   return () => {
-    for (const element of hiddenElements) {
-      const counterValue = (counterMap.get(element) || 0) - 1
+    hiddenElements.forEach((element) => {
+      const currentCounterValue = counterMap.get(element) || 0
+      const counterValue = controlAttribute ? currentCounterValue - 1 : currentCounterValue
       const markerValue = (markerCounter.get(element) || 0) - 1
 
       counterMap.set(element, counterValue)
@@ -126,7 +128,7 @@ function applyAttributeToOthers(uncorrectedAvoidElements: Element[], body: HTMLE
       if (!markerValue) {
         element.removeAttribute(markerName)
       }
-    }
+    })
 
     lockCount--
 

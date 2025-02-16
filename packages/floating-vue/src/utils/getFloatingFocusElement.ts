@@ -12,6 +12,5 @@ export function getFloatingFocusElement(
   // aria props.
   return floatingElement.hasAttribute(FOCUSABLE_ATTRIBUTE)
     ? floatingElement
-    : floatingElement.querySelector(`[${FOCUSABLE_ATTRIBUTE}]`)
-      || floatingElement
+    : floatingElement.querySelector(`[${FOCUSABLE_ATTRIBUTE}]`) || floatingElement
 }

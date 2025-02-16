@@ -229,16 +229,11 @@ export function getGridNavigatedIndex(
 }
 
 /** For each cell index, gets the item index that occupies that cell */
-export function buildCellMap(
-  sizes: Dimensions[],
-  cols: number,
-  dense: boolean,
-): (number | undefined)[] {
+export function buildCellMap(sizes: Dimensions[], cols: number, dense: boolean): (number | undefined)[] {
   const cellMap: (number | undefined)[] = []
   let startIndex = 0
 
-  for (let index = 0; index < sizes.length; index++) {
-    const { width, height } = sizes[index]!
+  sizes.forEach(({ width, height }, index) => {
     if (width > cols) {
       if (__DEV__)
         throw new Error(`[Floating UI]: Invalid grid - item width at index ${index} is greater than grid columns`)
@@ -267,7 +262,7 @@ export function buildCellMap(
         startIndex++
       }
     }
-  }
+  })
 
   // convert into a non-sparse array
   return [...cellMap]
