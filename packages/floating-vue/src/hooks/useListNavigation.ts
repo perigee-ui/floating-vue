@@ -178,7 +178,11 @@ export function useListNavigation(
 	context: FloatingRootContext,
 	props: UseListNavigationProps,
 ): () => ElementProps | undefined {
-	const { open, onOpenChange, elements } = context
+	const {
+		open,
+		onOpenChange,
+		elements: { floating, domReference },
+	} = context
 	const {
 		enabled = true,
 		activeIndex,
@@ -221,7 +225,7 @@ export function useListNavigation(
 		}
 	}
 
-	const floatingFocusElement = computed(() => getFloatingFocusElement(elements.floating.value))
+	const floatingFocusElement = computed(() => getFloatingFocusElement(floating.value))
 
 	// TODO:
 	// const parentId = useFloatingParentNodeId();
@@ -231,13 +235,13 @@ export function useListNavigation(
 	const tree: any = null
 	context.dataRef.orientation = orientation
 
-	const typeableComboboxReference = computed(() => isTypeableCombobox(elements.domReference.value))
+	const typeableComboboxReference = computed(() => isTypeableCombobox(domReference.value))
 
 	let focusItemOnOpenRef = focusItemOnOpen
 	let indexRef = toValue(selectedIndex) ?? -1
 	let keyRef = <undefined | string>undefined
 	let isPointerModalityRef = true
-	let previousMountedRef = !!elements.floating.value
+	let previousMountedRef = !!floating.value
 	let previousOpenRef = toValue(open)
 	let forceSyncFocusRef = false
 	let forceScrollIntoViewRef = false
@@ -295,7 +299,7 @@ export function useListNavigation(
 	watchEffect(() => {
 		if (!toValue(enabled)) return
 
-		if (toValue(open) && elements.floating.value) {
+		if (toValue(open) && floating.value) {
 			const selectedIndexValue = toValue(selectedIndex)
 			if (focusItemOnOpenRef && selectedIndexValue != null) {
 				// Regardless of the pointer modality, we want to ensure the selected
@@ -315,7 +319,7 @@ export function useListNavigation(
 
 	// Sync `activeIndex` to be the focused item while the floating element is open.
 	watchEffect(() => {
-		if (!toValue(enabled) || !toValue(open) || !elements.floating.value) return
+		if (!toValue(enabled) || !toValue(open) || !floating.value) return
 
 		const activeIndexValue = toValue(activeIndex)
 		if (activeIndexValue == null) {
@@ -370,16 +374,16 @@ export function useListNavigation(
 	// Ensure the parent floating element has focus when a nested child closes
 	// to allow arrow key navigation to work after the pointer leaves the child.
 	watchEffect(() => {
-		if (!toValue(enabled) || elements.floating.value || !tree || virtual || !previousMountedRef) {
+		if (virtual || !previousMountedRef || !toValue(enabled) || floating.value || !tree) {
 			return
 		}
 
 		// TODO: tree
 		const nodes = tree.nodesRef
-		const parent = nodes.find((node: any) => node.id === parentId)?.context?.elements.floating
-		const activeEl = activeElement(getDocument(elements.floating.value))
+		const parent = nodes.find((node: any) => node.id === parentId)?.context?.floating
+		const activeEl = activeElement(getDocument(floating.value))
 		const treeContainsActiveEl = nodes.some(
-			(node: any) => node.context && contains(node.context.elements.floating, activeEl),
+			(node: any) => node.context && contains(node.context.floating, activeEl),
 		)
 
 		if (parent && !treeContainsActiveEl && isPointerModalityRef) {
@@ -406,7 +410,7 @@ export function useListNavigation(
 
 	watchEffect(
 		() => {
-			previousMountedRef = !!elements.floating.value
+			previousMountedRef = !!floating.value
 		},
 		{ flush: 'sync' },
 	)
@@ -472,7 +476,7 @@ export function useListNavigation(
 		// If the floating element is animating out, ignore navigation. Otherwise,
 		// the `activeIndex` gets set to 0 despite not being open so the next time
 		// the user ArrowDowns, the first item won't be focused.
-		if (!toValue(open) && event.currentTarget === elements.floating.value) {
+		if (!toValue(open) && event.currentTarget === floating.value) {
 			return
 		}
 
@@ -482,13 +486,13 @@ export function useListNavigation(
 			stopEvent(event)
 			onOpenChange(false, event, 'list-navigation')
 
-			const domReference = elements.domReference.value
+			const domReferenceVal = domReference.value
 
-			if (isHTMLElement(domReference)) {
+			if (isHTMLElement(domReferenceVal)) {
 				if (virtual) {
-					tree?.events.emit('virtualfocus', domReference)
+					tree?.events.emit('virtualfocus', domReferenceVal)
 				} else {
-					domReference.focus()
+					domReferenceVal.focus()
 				}
 			}
 
