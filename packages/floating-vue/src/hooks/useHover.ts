@@ -117,10 +117,14 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
       if (open)
         return
 
-      if (timeoutRef)
+      if (timeoutRef) {
         window.clearTimeout(timeoutRef)
-      if (restTimeoutRef)
+        timeoutRef = 0
+      }
+      if (restTimeoutRef) {
         window.clearTimeout(restTimeoutRef)
+        restTimeoutRef = 0
+      }
       blockMouseMoveRef = true
       restTimeoutPendingRef = false
       hasCallDomRefMouseleaveOnce = false
@@ -158,16 +162,20 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
   function closeWithDelay(event: Event, runElseBranch = true, reason: OpenChangeReason = 'hover') {
     const closeDelay = getDelay(delay, 'close', pointerTypeRef)
     if (closeDelay && !handlerRef) {
-      if (timeoutRef)
+      if (timeoutRef) {
         window.clearTimeout(timeoutRef)
-      timeoutRef = window.setTimeout(() => {
-        onOpenChange(false, event, reason)
         timeoutRef = 0
+      }
+      timeoutRef = window.setTimeout(() => {
+        timeoutRef = 0
+        onOpenChange(false, event, reason)
       }, closeDelay)
     }
     else if (runElseBranch) {
-      if (timeoutRef)
+      if (timeoutRef) {
         window.clearTimeout(timeoutRef)
+        timeoutRef = 0
+      }
       onOpenChange(false, event, reason)
     }
   }
@@ -196,8 +204,10 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
   // delegation system. If the cursor was on a disabled element and then entered
   // the reference (no gap), `mouseenter` doesn't fire in the delegation system.
   function onDomRefMouseenter(event: MouseEvent) {
-    if (timeoutRef)
+    if (timeoutRef) {
       window.clearTimeout(timeoutRef)
+      timeoutRef = 0
+    }
     blockMouseMoveRef = false
 
     if ((mouseOnly && !isMouseLikePointerType(pointerTypeRef)) || (restMs > 0 && !getDelay(props.delay, 'open')))
@@ -207,9 +217,9 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
 
     if (openDelay) {
       timeoutRef = window.setTimeout(() => {
+        timeoutRef = 0
         if (!toValue(open))
           onOpenChange(true, event, 'hover')
-        timeoutRef = 0
       }, openDelay)
     }
     else if (!toValue(open)) {
@@ -225,14 +235,17 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
 
     const floatingVal = floating.value
     const doc = getDocument(floatingVal)
-    if (restTimeoutRef)
+    if (restTimeoutRef) {
       window.clearTimeout(restTimeoutRef)
+      restTimeoutRef = 0
+    }
     restTimeoutPendingRef = false
 
     if (handleClose && dataRef.floatingContext) {
       // Prevent clearing `onScrollMouseLeave` timeout.
-      if (!toValue(open) && timeoutRef) {
+      if (timeoutRef && !toValue(open)) {
         window.clearTimeout(timeoutRef)
+        timeoutRef = 0
       }
 
       handlerRef = handleClose({
@@ -384,10 +397,14 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
 
     onWatcherCleanup(() => {
       cleanupDocMousemoveHandler()
-      if (timeoutRef)
+      if (timeoutRef) {
         window.clearTimeout(timeoutRef)
-      if (restTimeoutRef)
+        timeoutRef = 0
+      }
+      if (restTimeoutRef) {
         window.clearTimeout(restTimeoutRef)
+        restTimeoutRef = 0
+      }
       clearPointerEvents()
     })
   })
@@ -418,8 +435,10 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
       if (restTimeoutPendingRef && event.movementX ** 2 + event.movementY ** 2 < 2)
         return
 
-      if (restTimeoutRef)
+      if (restTimeoutRef) {
         window.clearTimeout(restTimeoutRef)
+        restTimeoutRef = 0
+      }
 
       function handleMouseMove() {
         if (!blockMouseMoveRef && !toValue(open))
@@ -432,8 +451,8 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
       else {
         restTimeoutPendingRef = true
         restTimeoutRef = window.setTimeout(() => {
-          handleMouseMove()
           restTimeoutRef = 0
+          handleMouseMove()
         }, restMs)
       }
     },
@@ -442,8 +461,10 @@ export function useHover(context: FloatingContext, props: UseHoverProps = {}): (
 
   const floatingProps: ElementProps['floating'] = {
     onMouseenter() {
-      if (timeoutRef)
+      if (timeoutRef) {
         window.clearTimeout(timeoutRef)
+        timeoutRef = 0
+      }
     },
     onMouseleave(event) {
       if (!isClickLikeOpenEvent()) {

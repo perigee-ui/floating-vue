@@ -59,6 +59,7 @@ export function getGridNavigatedIndex(
     event,
     orientation,
     loop,
+    rtl,
     cols,
     disabledIndices,
     minIndex,
@@ -69,6 +70,7 @@ export function getGridNavigatedIndex(
     event: KeyboardEvent
     orientation: 'horizontal' | 'vertical' | 'both'
     loop: boolean
+    rtl: boolean
     cols: number
     disabledIndices: Array<number> | undefined
     minIndex: number
@@ -145,7 +147,7 @@ export function getGridNavigatedIndex(
   if (orientation === 'both') {
     const prevRow = Math.floor(prevIndex / cols)
 
-    if (event.key === ARROW_RIGHT) {
+    if (event.key === (rtl ? ARROW_LEFT : ARROW_RIGHT)) {
       if (stop)
         stopEvent(event)
 
@@ -174,7 +176,7 @@ export function getGridNavigatedIndex(
       }
     }
 
-    if (event.key === ARROW_LEFT) {
+    if (event.key === (rtl ? ARROW_RIGHT : ARROW_LEFT)) {
       if (stop)
         stopEvent(event)
 
@@ -210,7 +212,7 @@ export function getGridNavigatedIndex(
 
     if (isIndexOutOfBounds(elementsRef, nextIndex)) {
       if (loop && lastRow) {
-        nextIndex = event.key === ARROW_LEFT
+        nextIndex = event.key === (rtl ? ARROW_RIGHT : ARROW_LEFT)
           ? maxIndex
           : findNonDisabledIndex(elementsRef, {
               startingIndex: prevIndex - (prevIndex % cols) - 1,
@@ -234,7 +236,9 @@ export function buildCellMap(
 ): (number | undefined)[] {
   const cellMap: (number | undefined)[] = []
   let startIndex = 0
-  sizes.forEach(({ width, height }, index) => {
+
+  for (let index = 0; index < sizes.length; index++) {
+    const { width, height } = sizes[index]!
     if (width > cols) {
       if (__DEV__)
         throw new Error(`[Floating UI]: Invalid grid - item width at index ${index} is greater than grid columns`)
@@ -263,7 +267,7 @@ export function buildCellMap(
         startIndex++
       }
     }
-  })
+  }
 
   // convert into a non-sparse array
   return [...cellMap]

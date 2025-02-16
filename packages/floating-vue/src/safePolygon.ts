@@ -100,8 +100,10 @@ export function safePolygon(options: SafePolygonOptions = {}): HandleCloseFn {
         onClose()
       }
 
-      if (timeoutId)
+      if (timeoutId) {
         window.clearTimeout(timeoutId)
+        timeoutId = 0
+      }
 
       if (
         !domReference

@@ -314,8 +314,10 @@ export function useDismiss(
     }
 
     function handleCompositionStart() {
-      if (compositionTimeout)
+      if (compositionTimeout) {
         window.clearTimeout(compositionTimeout)
+        compositionTimeout = 0
+      }
       isComposingRef = true
     }
 
@@ -325,8 +327,8 @@ export function useDismiss(
       // https://bugs.webkit.org/show_bug.cgi?id=165004
       compositionTimeout = window.setTimeout(
         () => {
-          isComposingRef = false
           compositionTimeout = 0
+          isComposingRef = false
         },
         // 0ms or 1ms don't work in Safari. 5ms appears to consistently work.
         // Only apply to WebKit for the test to remain 0ms.
@@ -405,8 +407,10 @@ export function useDismiss(
         }
       }
 
-      if (compositionTimeout)
+      if (compositionTimeout) {
         window.clearTimeout(compositionTimeout)
+        compositionTimeout = 0
+      }
     })
   })
 

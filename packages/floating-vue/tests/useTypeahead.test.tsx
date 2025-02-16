@@ -1,4 +1,4 @@
-import type { MaybeRef, PropType, Ref } from 'vue'
+import type { PropType, Ref } from 'vue'
 import type { UseTypeaheadProps } from '../src/index.ts'
 import type { ElAttrs } from '../src/types.ts'
 
@@ -7,7 +7,7 @@ import { userEvent } from '@vitest/browser/context'
 import { expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-vue'
 
-import { computed, defineComponent, shallowRef, unref } from 'vue'
+import { defineComponent, shallowRef } from 'vue'
 import { useClick, useFloating, useInteractions, useTypeahead } from '../src/index.ts'
 import { useRef } from '../src/vue/index.ts'
 // import { Main } from '../visual/components/Menu'

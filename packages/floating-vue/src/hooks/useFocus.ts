@@ -96,8 +96,10 @@ export function useFocus(
   })
 
   onScopeDispose(() => {
-    if (timeoutRef)
+    if (timeoutRef) {
       window.clearTimeout(timeoutRef)
+      timeoutRef = 0
+    }
   })
 
   const referenceProps: ElementProps['reference'] = {

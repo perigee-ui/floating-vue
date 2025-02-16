@@ -249,13 +249,15 @@ function useDelayUnmount(open: MaybeRefOrGetter<boolean>, durationMs: number | (
     if (!openVal && isMountedVal) {
       let timeout = 0
       timeout = setTimeout(() => {
-        isMounted.value = false
         timeout = 0
+        isMounted.value = false
       }, typeof durationMs === 'function' ? durationMs() : durationMs)
 
       onWatcherCleanup(() => {
-        if (timeout)
-          clearTimeout(timeout)
+        if (timeout) {
+          window.clearTimeout(timeout)
+          timeout = 0
+        }
       })
     }
     else if (openVal && !isMountedVal) {

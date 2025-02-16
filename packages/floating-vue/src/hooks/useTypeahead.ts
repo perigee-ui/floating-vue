@@ -1,4 +1,4 @@
-import type { MaybeRefOrGetter, Ref } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import type { ElementProps, FloatingRootContext } from '../types.ts'
 import type { MutableRefObject } from '../vue/index.ts'
 import { toValue, watchEffect } from 'vue'
@@ -81,8 +81,10 @@ export function useTypeahead(
 
   watchEffect(() => {
     if (toValue(open)) {
-      if (timeoutIdRef)
-        clearTimeout(timeoutIdRef)
+      if (timeoutIdRef) {
+        window.clearTimeout(timeoutIdRef)
+        timeoutIdRef = 0
+      }
       matchIndexRef = undefined
       stringRef = ''
     }
@@ -128,21 +130,22 @@ export function useTypeahead(
 
   function onKeydown(event: KeyboardEvent) {
     const listContent = listRef.current
+    const eventKey = event.key
 
     if (stringRef.length > 0 && stringRef[0] !== ' ') {
       if (getMatchingIndex(listContent, listContent, stringRef) === -1) {
         setTypingChange(false)
       }
-      else if (event.key === ' ') {
+      else if (eventKey === ' ') {
         stopEvent(event)
       }
     }
 
     if (
       listContent.length === 0
-      || ignoreKeys.includes(event.key)
+      || ignoreKeys.includes(eventKey)
       // Character key.
-      || event.key.length !== 1
+      || eventKey.length !== 1
       // Modifier key.
       || event.ctrlKey
       || event.metaKey
@@ -151,33 +154,37 @@ export function useTypeahead(
       return
     }
 
-    if (toValue(open) && event.key !== ' ') {
+    if (toValue(open) && eventKey !== ' ') {
       stopEvent(event)
       setTypingChange(true)
     }
 
     // Bail out if the list contains a word like "llama" or "aaron". TODO:
     // allow it in this case, too.
-    const allowRapidSuccessionOfFirstLetter = listContent.every(text =>
-      text ? text[0]?.toLocaleLowerCase() !== text[1]?.toLocaleLowerCase() : true,
-    )
+    let allowRapidSuccessionOfFirstLetter = true
+    for (const text of listContent) {
+      if (text && text[0]?.toLocaleLowerCase() === text[1]?.toLocaleLowerCase()) {
+        allowRapidSuccessionOfFirstLetter = false
+        break
+      }
+    }
 
     // Allows the user to cycle through items that start with the same letter
     // in rapid succession.
-    if (allowRapidSuccessionOfFirstLetter && stringRef === event.key) {
+    if (allowRapidSuccessionOfFirstLetter && stringRef === eventKey) {
       stringRef = ''
       prevIndexRef = matchIndexRef
     }
 
-    stringRef += event.key
+    stringRef += eventKey
 
     if (timeoutIdRef)
-      clearTimeout(timeoutIdRef)
+      window.clearTimeout(timeoutIdRef)
     timeoutIdRef = setTimeout(() => {
+      timeoutIdRef = 0
       stringRef = ''
       prevIndexRef = matchIndexRef
       setTypingChange(false)
-      timeoutIdRef = 0
     }, resetMs)
 
     const index = getMatchingIndex(
@@ -193,7 +200,7 @@ export function useTypeahead(
       onMatch?.(index)
       matchIndexRef = index
     }
-    else if (event.key !== ' ') {
+    else if (eventKey !== ' ') {
       stringRef = ''
       setTypingChange(false)
     }
