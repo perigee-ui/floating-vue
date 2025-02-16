@@ -3,65 +3,62 @@ import { tabbable } from 'tabbable'
 import { activeElement, contains, getDocument } from '../utils.ts'
 
 export function getTabbableOptions() {
-  return ({
-    getShadowRoot: true,
-    displayCheck:
-      // JSDOM does not support the `tabbable` library. To solve this we can
-      // check if `ResizeObserver` is a real function (not polyfilled), which
-      // determines if the current environment is JSDOM-like.
-      typeof ResizeObserver === 'function' && ResizeObserver.toString().includes('[native code]')
-        ? 'full'
-        : 'none',
-  }) as const
+	return {
+		getShadowRoot: true,
+		displayCheck:
+			// JSDOM does not support the `tabbable` library. To solve this we can
+			// check if `ResizeObserver` is a real function (not polyfilled), which
+			// determines if the current environment is JSDOM-like.
+			typeof ResizeObserver === 'function' && ResizeObserver.toString().includes('[native code]')
+				? 'full'
+				: 'none',
+	} as const
 }
 
 export function getTabbableIn(container: HTMLElement, direction: 'next' | 'prev'): FocusableElement | undefined {
-  const allTabbable = tabbable(container, getTabbableOptions())
+	const allTabbable = tabbable(container, getTabbableOptions())
 
-  if (direction === 'prev') {
-    allTabbable.reverse()
-  }
+	if (direction === 'prev') {
+		allTabbable.reverse()
+	}
 
-  const activeIndex = allTabbable.indexOf(
-    activeElement(getDocument(container)) as HTMLElement,
-  )
-  const nextTabbableElements = allTabbable.slice(activeIndex + 1)
-  return nextTabbableElements[0]
+	const activeIndex = allTabbable.indexOf(activeElement(getDocument(container)) as HTMLElement)
+	const nextTabbableElements = allTabbable.slice(activeIndex + 1)
+	return nextTabbableElements[0]
 }
 
 export function getNextTabbable(): FocusableElement | undefined {
-  return getTabbableIn(document.body, 'next')
+	return getTabbableIn(document.body, 'next')
 }
 
 export function getPreviousTabbable(): FocusableElement | undefined {
-  return getTabbableIn(document.body, 'prev')
+	return getTabbableIn(document.body, 'prev')
 }
 
 export function isOutsideEvent(event: FocusEvent, container?: Element): boolean {
-  const containerElement = container || (event.currentTarget as Element)
-  const relatedTarget = event.relatedTarget as HTMLElement | null
+	const containerElement = container || (event.currentTarget as Element)
+	const relatedTarget = event.relatedTarget as HTMLElement | null
 
-  return !relatedTarget || !contains(containerElement, relatedTarget)
+	return !relatedTarget || !contains(containerElement, relatedTarget)
 }
 
 export function disableFocusInside(container: HTMLElement): void {
-  const tabbableElements = tabbable(container, getTabbableOptions())
-  tabbableElements.forEach((element) => {
-    element.dataset.tabindex = element.getAttribute('tabindex') || ''
-    element.setAttribute('tabindex', '-1')
-  })
+	const tabbableElements = tabbable(container, getTabbableOptions())
+	tabbableElements.forEach((element) => {
+		element.dataset.tabindex = element.getAttribute('tabindex') || ''
+		element.setAttribute('tabindex', '-1')
+	})
 }
 
 export function enableFocusInside(container: HTMLElement): void {
-  const elements = container.querySelectorAll<HTMLElement>('[data-tabindex]')
-  elements.forEach((element) => {
-    const tabindex = element.dataset.tabindex
-    delete element.dataset.tabindex
-    if (tabindex) {
-      element.setAttribute('tabindex', tabindex)
-    }
-    else {
-      element.removeAttribute('tabindex')
-    }
-  })
+	const elements = container.querySelectorAll<HTMLElement>('[data-tabindex]')
+	elements.forEach((element) => {
+		const tabindex = element.dataset.tabindex
+		delete element.dataset.tabindex
+		if (tabindex) {
+			element.setAttribute('tabindex', tabindex)
+		} else {
+			element.removeAttribute('tabindex')
+		}
+	})
 }

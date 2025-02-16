@@ -2,7 +2,7 @@ import { onUpdated, shallowRef, triggerRef, watch } from 'vue'
 import { useFloatingListContet } from './FloatingList.ts'
 
 export interface UseListItemProps {
-  label?: string | undefined
+	label?: string | undefined
 }
 
 /**
@@ -11,56 +11,55 @@ export interface UseListItemProps {
  * @see https://floating-ui.com/docs/FloatingList#uselistitem
  */
 export function useListItem(props: UseListItemProps = {}): {
-  readonly setItem: (node: HTMLElement | undefined) => void
-  readonly index: () => number
+	readonly setItem: (node: HTMLElement | undefined) => void
+	readonly index: () => number
 } {
-  const { label } = props
+	const { label } = props
 
-  const { register, unregister, map, elementsRef, labelsRef } = useFloatingListContet('useListItem')
+	const { register, unregister, map, elementsRef, labelsRef } = useFloatingListContet('useListItem')
 
-  const index = shallowRef<number>()
+	const index = shallowRef<number>()
 
-  const componentRef = shallowRef<HTMLElement | undefined>()
+	const componentRef = shallowRef<HTMLElement | undefined>()
 
-  function setItem(node: HTMLElement | undefined): void {
-    componentRef.value = node
+	function setItem(node: HTMLElement | undefined): void {
+		componentRef.value = node
 
-    const indexVal = index.value
-    if (indexVal != null) {
-      elementsRef.current[indexVal] = node
-      if (labelsRef) {
-        const isLabelDefined = label != null
-        labelsRef.current[indexVal] = isLabelDefined ? label : node?.textContent ?? undefined
-      }
-    }
-  }
+		const indexVal = index.value
+		if (indexVal != null) {
+			elementsRef.current[indexVal] = node
+			if (labelsRef) {
+				const isLabelDefined = label != null
+				labelsRef.current[indexVal] = isLabelDefined ? label : (node?.textContent ?? undefined)
+			}
+		}
+	}
 
-  onUpdated(() => {
-    triggerRef(componentRef)
-  })
+	onUpdated(() => {
+		triggerRef(componentRef)
+	})
 
-  watch(componentRef, (node, __, onCleanup) => {
-    if (node) {
-      register(node)
+	watch(componentRef, (node, __, onCleanup) => {
+		if (node) {
+			register(node)
 
-      onCleanup(() => {
-        unregister(node)
-      })
-    }
-  })
+			onCleanup(() => {
+				unregister(node)
+			})
+		}
+	})
 
-  watch(map, () => {
-    const node = componentRef?.value
+	watch(map, () => {
+		const node = componentRef?.value
 
-    const _index = node ? map.value.get(node) : undefined
-    if (_index != null)
-      index.value = _index
-  })
+		const _index = node ? map.value.get(node) : undefined
+		if (_index != null) index.value = _index
+	})
 
-  return {
-    setItem,
-    index() {
-      return index.value == null ? -1 : index.value
-    },
-  } as const
+	return {
+		setItem,
+		index() {
+			return index.value == null ? -1 : index.value
+		},
+	} as const
 }

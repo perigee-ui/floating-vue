@@ -1,11 +1,12 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu({
-  ignores: [
-    'tsconfig.*.json',
-  ],
+	stylistic: false,
+	ignores: [
+		'tsconfig.*.json',
+	],
 }, {
-  rules: {
-    'import/extensions': ['error', 'ignorePackages'],
-  },
+	rules: {
+		'import/extensions': ['error', 'ignorePackages'],
+	},
 })

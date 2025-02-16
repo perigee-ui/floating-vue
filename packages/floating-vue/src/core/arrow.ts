@@ -1,23 +1,20 @@
 import type { Middleware, Padding } from '@floating-ui/dom'
 import type { MaybeRefOrGetter } from 'vue'
 
-import {
-  arrow as arrowCore,
-
-} from '@floating-ui/dom'
+import { arrow as arrowCore } from '@floating-ui/dom'
 import { toValue } from 'vue'
 
 export interface ArrowOptions {
-  /**
-   * The arrow element or template ref to be positioned.
-   * @required
-   */
-  element: MaybeRefOrGetter<Element | undefined>
-  /**
-   * The padding between the arrow element and the floating element edges. Useful when the floating element has rounded corners.
-   * @default 0
-   */
-  padding?: Padding
+	/**
+	 * The arrow element or template ref to be positioned.
+	 * @required
+	 */
+	element: MaybeRefOrGetter<Element | undefined>
+	/**
+	 * The padding between the arrow element and the floating element edges. Useful when the floating element has rounded corners.
+	 * @default 0
+	 */
+	padding?: Padding
 }
 
 /**
@@ -26,17 +23,17 @@ export interface ArrowOptions {
  * @see https://floating-ui.com/docs/arrow
  */
 export function arrow(options: ArrowOptions): Middleware {
-  return {
-    name: 'arrow',
-    options,
-    fn(state) {
-      const element = toValue(options.element)
+	return {
+		name: 'arrow',
+		options,
+		fn(state) {
+			const element = toValue(options.element)
 
-      if (element == null) {
-        return {}
-      }
+			if (element == null) {
+				return {}
+			}
 
-      return arrowCore({ element, padding: options.padding }).fn(state)
-    },
-  }
+			return arrowCore({ element, padding: options.padding }).fn(state)
+		},
+	}
 }

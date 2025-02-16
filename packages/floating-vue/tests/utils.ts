@@ -7,7 +7,7 @@
 // }
 
 export async function act() {
-  for (let i = 0; i < 7; i++) {
-    await Promise.resolve()
-  }
+	for (let i = 0; i < 7; i++) {
+		await Promise.resolve()
+	}
 }

@@ -9,24 +9,24 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  define: {
-    __DEV__: process.env.NODE_ENV !== 'production',
-  },
-  plugins: [
-    vue(),
-    vueJsx(),
-    UnoCSS(),
-    VueRouter({
-      extensions: ['.vue'],
-      dts: 'src/typed-router.d.ts',
-    }),
-  ],
-  build: {
-    minify: false,
-  },
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
+	define: {
+		__DEV__: process.env.NODE_ENV !== 'production',
+	},
+	plugins: [
+		vue(),
+		vueJsx(),
+		UnoCSS(),
+		VueRouter({
+			extensions: ['.vue'],
+			dts: 'src/typed-router.d.ts',
+		}),
+	],
+	build: {
+		minify: false,
+	},
+	resolve: {
+		alias: {
+			'@': fileURLToPath(new URL('./src', import.meta.url)),
+		},
+	},
 })

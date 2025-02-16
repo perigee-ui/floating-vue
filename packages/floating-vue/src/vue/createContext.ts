@@ -8,23 +8,22 @@ import { inject, provide } from 'vue'
  *
  */
 export function createContext<T>(
-  contextName: string,
-  defaultValue?: T,
+	contextName: string,
+	defaultValue?: T,
 ): readonly [provideContext: (state: T) => void, useContext: (consumerName?: string) => T] {
-  const key: string | InjectionKey<T> = Symbol(contextName)
+	const key: string | InjectionKey<T> = Symbol(contextName)
 
-  const provideContext = (state: T) => {
-    provide(key, state)
-  }
+	const provideContext = (state: T) => {
+		provide(key, state)
+	}
 
-  const useContext = (consumerName?: string) => {
-    const state = inject(key, defaultValue)
+	const useContext = (consumerName?: string) => {
+		const state = inject(key, defaultValue)
 
-    if (!state)
-      throw new Error(`\`${consumerName}\` must be used within \`${contextName}\``)
+		if (!state) throw new Error(`\`${consumerName}\` must be used within \`${contextName}\``)
 
-    return state
-  }
+		return state
+	}
 
-  return [provideContext, useContext]
+	return [provideContext, useContext]
 }
