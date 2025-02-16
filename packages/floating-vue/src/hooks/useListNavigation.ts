@@ -377,7 +377,7 @@ export function useListNavigation(
 	// Ensure the parent floating element has focus when a nested child closes
 	// to allow arrow key navigation to work after the pointer leaves the child.
 	watchEffect(() => {
-		if (!toValue(enabled) || floating.value || !tree || virtual || !previousMountedRef) {
+		if (!toValue(enabled) || virtual || floating.value || !tree || !previousMountedRef) {
 			return
 		}
 
@@ -476,7 +476,8 @@ export function useListNavigation(
 		// If the floating element is animating out, ignore navigation. Otherwise,
 		// the `activeIndex` gets set to 0 despite not being open so the next time
 		// the user ArrowDowns, the first item won't be focused.
-		if (!toValue(open) && floatingFocusElement.value) {
+		const openVal = toValue(open)
+		if (!openVal && floatingFocusElement.value) {
 			return
 		}
 
@@ -580,7 +581,11 @@ export function useListNavigation(
 								// use a corner matching the edge closest to the direction
 								// we're moving in so we don't end up in the same item. Prefer
 								// top/left over bottom/right.
-								eventKey === ARROW_DOWN ? 'bl' : eventKey === ARROW_RIGHT ? 'tr' : 'tl',
+								eventKey === ARROW_DOWN
+									? 'bl'
+									: eventKey === (rtl ? ARROW_LEFT : ARROW_RIGHT)
+										? 'tr'
+										: 'tl',
 							),
 							stopEvent: true,
 						},
@@ -602,8 +607,8 @@ export function useListNavigation(
 
 			// Reset the index if no item is focused.
 			if (
+				openVal &&
 				!virtual &&
-				toValue(open) &&
 				activeElement((event.currentTarget as HTMLElement).ownerDocument) === event.currentTarget
 			) {
 				indexRef = isMainOrientationToEndKey(eventKey, orientation, rtl) ? minIndex : maxIndex
