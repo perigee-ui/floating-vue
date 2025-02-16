@@ -239,9 +239,10 @@ export function useListNavigation(
 
 	let focusItemOnOpenRef = focusItemOnOpen
 	let indexRef = toValue(selectedIndex) ?? -1
-	let keyRef = <undefined | string>undefined
+	let keyRef: string | undefined
 	let isPointerModalityRef = true
 	let previousMountedRef = !!floating.value
+	// TODO: previousOpenRef
 	let previousOpenRef = toValue(open)
 	let forceSyncFocusRef = false
 	let forceScrollIntoViewRef = false
@@ -286,7 +287,7 @@ export function useListNavigation(
 				runFocus(waitedItem)
 			}
 
-			const shouldScrollIntoView = scrollItemIntoView && (forceScrollIntoViewRef || !isPointerModalityRef)
+			const shouldScrollIntoView = !!scrollItemIntoView && (forceScrollIntoViewRef || !isPointerModalityRef)
 
 			if (shouldScrollIntoView) {
 				waitedItem.scrollIntoView(scrollItemIntoView)
@@ -300,13 +301,15 @@ export function useListNavigation(
 		if (!toValue(enabled)) return
 
 		if (toValue(open) && floating.value) {
-			const selectedIndexValue = toValue(selectedIndex)
-			if (focusItemOnOpenRef && selectedIndexValue != null) {
-				// Regardless of the pointer modality, we want to ensure the selected
-				// item comes into view when the floating element is opened.
-				forceScrollIntoViewRef = true
-				indexRef = selectedIndexValue
-				onNavigate()
+			if (focusItemOnOpenRef) {
+				const selectedIndexValue = toValue(selectedIndex)
+				if (selectedIndexValue != null) {
+					// Regardless of the pointer modality, we want to ensure the selected
+					// item comes into view when the floating element is opened.
+					forceScrollIntoViewRef = true
+					indexRef = selectedIndexValue
+					onNavigate()
+				}
 			}
 		} else if (previousMountedRef) {
 			// Since the user can specify `onNavigate` conditionally
@@ -374,17 +377,15 @@ export function useListNavigation(
 	// Ensure the parent floating element has focus when a nested child closes
 	// to allow arrow key navigation to work after the pointer leaves the child.
 	watchEffect(() => {
-		if (virtual || !previousMountedRef || !toValue(enabled) || floating.value || !tree) {
+		if (!toValue(enabled) || floating.value || !tree || virtual || !previousMountedRef) {
 			return
 		}
 
 		// TODO: tree
-		const nodes = tree.nodesRef
+		const nodes: any[] = tree.nodesRef
 		const parent = nodes.find((node: any) => node.id === parentId)?.context?.floating
 		const activeEl = activeElement(getDocument(floating.value))
-		const treeContainsActiveEl = nodes.some(
-			(node: any) => node.context && contains(node.context.floating, activeEl),
-		)
+		const treeContainsActiveEl = nodes.some((node) => node.context && contains(node.context.floating, activeEl))
 
 		if (parent && !treeContainsActiveEl && isPointerModalityRef) {
 			parent.focus({ preventScroll: true })
@@ -392,7 +393,7 @@ export function useListNavigation(
 	})
 
 	watchEffect(() => {
-		if (!toValue(enabled) || !tree || !virtual || !parentId) return
+		if (!toValue(enabled) || !tree || !virtual || parentId) return
 
 		function handleVirtualFocus(item: HTMLElement) {
 			virtualId.value = item.id
@@ -410,6 +411,7 @@ export function useListNavigation(
 
 	watchEffect(
 		() => {
+			previousOpenRef = toValue(open)
 			previousMountedRef = !!floating.value
 		},
 		{ flush: 'sync' },
@@ -419,8 +421,6 @@ export function useListNavigation(
 		if (!toValue(open)) {
 			keyRef = undefined
 		}
-
-		previousOpenRef = toValue(open)
 	})
 
 	function syncCurrentTarget(currentTarget: HTMLElement | undefined) {
@@ -476,7 +476,7 @@ export function useListNavigation(
 		// If the floating element is animating out, ignore navigation. Otherwise,
 		// the `activeIndex` gets set to 0 despite not being open so the next time
 		// the user ArrowDowns, the first item won't be focused.
-		if (!toValue(open) && event.currentTarget === floating.value) {
+		if (!toValue(open) && floatingFocusElement.value) {
 			return
 		}
 
@@ -537,7 +537,7 @@ export function useListNavigation(
 
 			for (let cellIndex = 0; cellIndex < cellMap.length; cellIndex++) {
 				const index = cellMap[cellIndex]
-				const isAllowedIndex = index != null && !isDisabled(listRef.current, index, disabledIndices)
+				const isAllowedIndex = index != null && !isDisabled(list, index, disabledIndices)
 
 				if (!isFindingMin && isAllowedIndex) {
 					minGridIndex = index
@@ -553,7 +553,7 @@ export function useListNavigation(
 			const index =
 				cellMap[
 					getGridNavigatedIndex(
-						cellMap.map((itemIndex) => (itemIndex != null ? listRef.current[itemIndex] : undefined)),
+						cellMap.map((itemIndex) => (itemIndex != null ? list[itemIndex] : undefined)),
 						{
 							event,
 							orientation,
@@ -615,17 +615,17 @@ export function useListNavigation(
 				if (loop) {
 					indexRef =
 						currentIndex >= maxIndex
-							? allowEscape && currentIndex !== listRef.current.length
+							? allowEscape && currentIndex !== list.length
 								? -1
 								: minIndex
-							: findNonDisabledIndex(listRef.current, {
+							: findNonDisabledIndex(list, {
 									startingIndex: currentIndex,
 									disabledIndices,
 								})
 				} else {
 					indexRef = Math.min(
 						maxIndex,
-						findNonDisabledIndex(listRef.current, {
+						findNonDisabledIndex(list, {
 							startingIndex: currentIndex,
 							disabledIndices,
 						}),
@@ -636,9 +636,9 @@ export function useListNavigation(
 					indexRef =
 						currentIndex <= minIndex
 							? allowEscape && currentIndex !== -1
-								? listRef.current.length
+								? list.length
 								: maxIndex
-							: findNonDisabledIndex(listRef.current, {
+							: findNonDisabledIndex(list, {
 									startingIndex: currentIndex,
 									decrement: true,
 									disabledIndices,
@@ -646,7 +646,7 @@ export function useListNavigation(
 				} else {
 					indexRef = Math.max(
 						minIndex,
-						findNonDisabledIndex(listRef.current, {
+						findNonDisabledIndex(list, {
 							startingIndex: currentIndex,
 							decrement: true,
 							disabledIndices,
@@ -655,7 +655,7 @@ export function useListNavigation(
 				}
 			}
 
-			if (isIndexOutOfBounds(listRef.current, indexRef)) {
+			if (isIndexOutOfBounds(list, indexRef)) {
 				indexRef = -1
 			}
 
@@ -664,14 +664,10 @@ export function useListNavigation(
 	}
 
 	const ariaActiveDescendantProp = computed(() => {
-		return (
-			(virtual &&
-				toValue(open) &&
-				toValue(activeIndex) != null && {
-					'aria-activedescendant': virtualId.value || activeId.value,
-				}) ||
-			undefined
-		)
+		if (virtual && toValue(open) && toValue(activeIndex) != null)
+			return { 'aria-activedescendant': virtualId.value || activeId.value }
+
+		return undefined
 	})
 
 	const floatingProps = computed<ElementProps['floating']>(() => {
@@ -705,8 +701,8 @@ export function useListNavigation(
 			onKeydown(event) {
 				isPointerModalityRef = false
 				const isOpen = toValue(open)
-
 				const eventKey = event.key
+
 				const isArrowKey = eventKey.indexOf('Arrow') === 0
 				const isHomeOrEndKey = ['Home', 'End'].includes(eventKey)
 				const isMoveKey = isArrowKey || isHomeOrEndKey
@@ -735,7 +731,7 @@ export function useListNavigation(
 
 						if (isCrossOpenKey || isCrossCloseKey) {
 							const isCurrentTarget = deepestNode.context?.elements.domReference === event.currentTarget
-							const activeIdVal = toValue(activeId)
+							const activeIdVal = activeId.value
 							const dispatchItem =
 								isCrossCloseKey && !isCurrentTarget
 									? deepestNode.context?.elements.domReference
@@ -750,7 +746,7 @@ export function useListNavigation(
 							}
 						}
 
-						if (isMainKey && deepestNode.context) {
+						if ((isMainKey || isHomeOrEndKey) && deepestNode.context) {
 							const deepestNodeContext = deepestNode.context
 							if (
 								deepestNodeContext.open &&
