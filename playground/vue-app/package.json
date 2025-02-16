@@ -21,15 +21,15 @@
     "@iconify-json/radix-icons": "^1.2.2",
     "@perigee-ui/floating-vue": "workspace:*",
     "@tsconfig/node20": "^20.1.4",
-    "@unocss/preset-web-fonts": "^65.4.3",
-    "@unocss/reset": "^65.4.3",
+    "@unocss/preset-web-fonts": "^65.5.0",
+    "@unocss/reset": "^65.5.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
     "@vue/tsconfig": "^0.7.0",
     "npm-run-all2": "^7.0.2",
-    "unocss": "^65.4.3",
+    "unocss": "^65.5.0",
     "unplugin-vue-router": "^0.11.2",
     "vite": "^6.1.0",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "^2.2.2"
   }
 }
